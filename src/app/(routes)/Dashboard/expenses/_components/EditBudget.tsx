@@ -17,8 +17,24 @@ import { db } from '../../../../../../utils/dbConfig';
 import { Budgets } from '../../../../../../utils/schema';
 import { eq } from 'drizzle-orm';
 import { toast } from 'sonner';
- 
-function EditBudget({budgetInfo,refreshData}) {
+interface BudgetInfo {
+  id: number; // Assuming id is a number
+  name: string; // Budget name
+  amount: string; // Budget amount, assuming it's a string
+  icon: string|null; // Emoji or icon representation
+  // Add any other properties that are part of the budget object
+}
+
+interface EditBudgetProps {
+  budgetInfo?: BudgetInfo; // The budget information
+  refreshData: any; // Function to refresh data
+}
+
+
+function EditBudget({budgetInfo,refreshData} : EditBudgetProps) {
+  if (!budgetInfo) {
+    return null; // Or return a loading state or a message
+  }
     const [emojiIcon, setEmojiIcon] = useState(budgetInfo?.icon);
     const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
     const [name, setName] = useState<string | undefined>();
