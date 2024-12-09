@@ -24,7 +24,7 @@ function AddExpenses({ budgetId, user,refreshData }: AddExpensesProps) {
     try {
       const result = await db.insert(Expenses).values({
         name,
-        amount,
+        amount : amount.toString(),
         budgetId,
         createdAt: moment().format('DD/MM/YYYY')
       }).returning({ insertedId: Budgets.id });
