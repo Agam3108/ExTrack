@@ -8,10 +8,10 @@ import { useUser } from '@clerk/nextjs';
 import { Budget } from '../budgets/_components/BudgetList';
 
 interface Expense {
-  id: number;
-  name: string;
-  amount: number;
-  createdAt: string;
+  id: number | null; // Allow null
+  name: string | null; // Allow null
+  amount: string | null; // Change to string
+  createdAt: string | null; // Allow null
 }
 
 function Page() {
@@ -43,7 +43,7 @@ function Page() {
       
     const formattedResult = result.map((item) => ({
       ...item,
-      amount: Number(item.amount),  // Convert amount to a number
+      //amount: Number(item.amount),  // Convert amount to a number
     }));
 
     setBudgetList(formattedResult);
@@ -51,6 +51,7 @@ function Page() {
   }
 
   const getAllExpenses = async() => {
+    if(user?.primaryEmailAddress?.emailAddress){
     const result = await db.select({
       id: Expenses.id,
       name: Expenses.name,
@@ -62,9 +63,16 @@ function Page() {
     .where(eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress))
     .orderBy(desc(Expenses.id));
 
-    setExpensesList(result);
-  }
+    const filteredResult = result.filter((expense) => 
+      expense.id !== null && 
+      expense.name !== null && 
+      expense.amount !== null && 
+      expense.createdAt !== null
+    );
 
+    setExpensesList(filteredResult);
+    }
+  }
   return (
     <div className='p-10'>
       <h2 className='font-bold text-3xl'>My Expenses</h2>
