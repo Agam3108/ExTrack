@@ -12,7 +12,7 @@ export type Budget = {
   totalItems: number;
   id: number;
   name: string;
-  amount: number;
+  amount: string;
   icon: string | null;
   createdBy: string;
 };
@@ -48,7 +48,7 @@ function BudgetList() {
       .orderBy(desc(Budgets.id));
       const formattedResult = result.map((item) => ({
         ...item,
-        amount: Number(item.amount),  // Convert amount to a number
+        //amount: Number(item.amount),  // Convert amount to a number
       }));
     
   
