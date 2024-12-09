@@ -23,11 +23,13 @@ function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [ user]);
 
   const checkUserBudgets = async () => {
+    if(user?.primaryEmailAddress?.emailAddress) {
     const result = await db.select().from(Budgets).where(eq(Budgets.createdBy, user?.primaryEmailAddress?.emailAddress));
     console.log(result);
     if (result?.length === 0) {
       router.replace('/Dashboard/budgets');
     }
+  }
   }
 
   return (
