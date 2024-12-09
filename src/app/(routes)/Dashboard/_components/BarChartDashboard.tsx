@@ -1,7 +1,16 @@
 import React from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+interface BudgetItem {
+  name: string; // Assuming 'name' is a string
+  totalSpending: number; // Assuming 'totalSpending' is a number
+  amount: string; // Assuming 'amount' is a number
+}
 
-function BarChartDashboard({ budgetList }) {
+// Define the props for the BarChartDashboard component
+interface BarChartDashboardProps {
+  budgetList: BudgetItem[]; // budgetList is an array of BudgetItem
+}
+const BarChartDashboard: React.FC<BarChartDashboardProps> = ({ budgetList }) => {
   return (
     <div className='border rounded-lg p-5'>
         <h2 className='font-bold text-lg text-center'>Activity</h2>
