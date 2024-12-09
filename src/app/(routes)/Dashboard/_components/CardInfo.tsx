@@ -2,8 +2,18 @@ import { PiggyBank, ReceiptText, Wallet } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import BudgetList from '../budgets/_components/BudgetList';
 interface Budget { amount: string; totalSpend: number; }
+interface BudgetItem {
+  name: string; // Assuming 'name' is a string
+  totalSpending: number; // Assuming 'totalSpending' is a number
+  amount: string; // Assuming 'amount' is a number
+}
 
-function CardInfo({budgetList}) {
+// Define the props for the BarChartDashboard component
+interface CardInfoDashboardProps {
+  budgetList: BudgetItem[]; // budgetList is an array of BudgetItem
+}
+
+const CardInfo: React.FC<CardInfoDashboardProps> = ({ budgetList }) => {
     //console.log('Budget List:' , budgetList) ;
     const [totalBudget, setTotalBudget] = useState<number>(0); const [totalSpending, setTotalSpending] = useState<number>(0);
 
@@ -15,7 +25,7 @@ function CardInfo({budgetList}) {
         console.log(budgetList);
         let totalBudget_ = 0;
         let totalSpend_ = 0;
-        budgetList.forEach(element=>{
+        budgetList.forEach((element: { amount: any; totalSpending: any; })=>{
            // console.log('Element:', element); console.log('Total Spend:', element.totalSpending);
             totalBudget_ = totalBudget_+Number(element.amount);
             totalSpend_ += element.totalSpending ? element.totalSpending : 0 ;
