@@ -36,18 +36,24 @@ interface ExpensesScreenProps {
 interface BudgetInfo {
   id: number;
   name: string;
-  amount: number;
+  amount: string;
   icon: string | null;
   createdBy: string;
   totalSpending: number;
   totalItems: number;
+}
+interface Expense {
+  id: number | null; // Allow null
+  name: string | null; // Allow null
+  amount: string | null ; // Change to string
+  createdAt: string | null; // Allow null
 }
 
 function ExpensesScreen({ params }: ExpensesScreenProps) {
   const { user } = useUser();
 
   const [budgetInfo, setbudgetInfo] = useState<BudgetInfo | undefined>(undefined);
-  const [expensesList, setExpensesList] = useState<Expenses[]>([]);
+  const [expensesList, setExpensesList] = useState<Expense[]>([]);
   const route = useRouter();
 
   useEffect(() => {
@@ -60,7 +66,7 @@ function ExpensesScreen({ params }: ExpensesScreenProps) {
     const result = await db
       .select({
         ...getTableColumns(Budgets),
-        amount: sql`CAST(${Budgets.amount} AS NUMERIC)`.mapWith(Number),
+        amount: sql`CAST(${Budgets.amount} AS TEXT)`,
         totalSpending: sql`sum(CAST(${Expenses.amount} AS NUMERIC))`.mapWith(Number),
         totalItems: sql`count(${Expenses.id})`.mapWith(Number),
       })
@@ -69,8 +75,11 @@ function ExpensesScreen({ params }: ExpensesScreenProps) {
       .where(eq(Budgets.createdBy, emailAddress))
       .having(eq(Budgets.id, budgetId))
       .groupBy(Budgets.id);
-
-    setbudgetInfo(result[0]);
+      const formattedResult = result.map((item) => ({
+        ...item,
+        amount: String(item.amount),  // Convert amount to a number
+      }));
+    setbudgetInfo(formattedResult[0]);
     getExpensesList();
   };
 
@@ -105,10 +114,13 @@ function ExpensesScreen({ params }: ExpensesScreenProps) {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">My Expenses</h2>
         <div className="flex gap-3">
+          { budgetInfo && ( 
+          
           <EditBudget
             budgetInfo={budgetInfo}
             refreshData={() => getBudgetInfo(user?.primaryEmailAddress?.emailAddress!, parseInt(params.id))}
           />
+        )}
           <AlertDialog>
             <AlertDialogTrigger>
               <Button className="flex gap-2 mb-4" variant="destructive">
